@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tercer Examen, Parte A</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f4f4f4;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 800px;
+            width: 90%;
+            margin-top: 20px;
+        }
+        .question {
+            margin-bottom: 20px;
+            text-align: left;
+            color: royalblue;
+            font-weight: bold;
+        }
+        label {
+            color: deeppink;
+            cursor: pointer;
+        }
+        button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #218838;
+        }
+        h2.hidden {
+            display: none;
+        }
+        .correct {
+            color: green;
+            font-weight: bold;
+        }
+        .incorrect {
+            color: red;
+            font-weight: bold;
+        }
+        .grande {
+            font-size: 16px;
+            font-weight: bold;
+            color: rgb(0, 0, 0); /* Puedes cambiar el color si lo deseas */
+        }
+        h1 {
+            color: black;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>E S P A Ñ O L</h1>
+        <form id="quizForm">
+            <div id="questionsContainer"></div>
+            <button type="button" onclick="calculateScore()">Finalizar</button>
+        </form>
+        <h2 id="result" class="hidden"></h2>
+    </div>
+    
+    <script>
+        const questions = [
+            { question: "1. Es un ejemplo de la Literatura Universal:", options: ["A) La Carta Magna", "B) El Corán", "C) El Origen de las Especies", "D) El Quijote de la Mancha"], correct: "D) El Quijote de la Mancha" },
+            { question: "2. Es el ejemplo de una oración:", options: ["A) La tetera rota", "B) Corriendo", "C) Son lindas", "D) Para la fiesta"], correct: "C) Son lindas" },
+            { question: "3. Identifica la palabra que está en participio.", options: ["A) Caminando", "B) Aplaudido", "C) Hervir", "D) Respeto"], correct: "B) Aplaudido" },
+            { question: "4. Principal Característica de la Fábula:", options: ["A) Animales", "B) Moraleja", "C) Protagonista", "D) Trama"], correct: "B) Moraleja" },
+            { question: "5. Ejemplo de Función Referencial de la Lengua:", options: ["A) Programa UNAM", "B) Teletón", "C) Anuncio Publicitario", "D) Programa deportivo"], correct: "A) Programa UNAM" },
+            { question: "6. Representante del Barroco Mexicano", options: ["A) José Martí", "B) Rubén Darío", "C) Lorena Conde", "D) Sor Juana Inés de la Cruz"], correct: "D) Sor Juana Inés de la Cruz" },
+            { question: "7. La Oración Principal de un Párrafo se llama:", options: ["A) Compuesta", "B) Temática", "C) Coordinada", "D) Reseña"], correct: "B) Temática" },
+            { question: "8. ¿Qué tipo de palabra es la que está en negritas?   <span class='grande'>Ellas</span> eran muy amigas", options: ["A) Adjetivo", "B) Verbo", "C) Sustantivo", "D) Núcleo del Predicado"], correct: "B) Verbo" },
+            { question: "9. La palabra '<span class='grande'>Lo</span>' es:", options: ["A) Artículo", "B) Pronombre", "C) Disyunción", "D) Preposición"], correct: "A) Artículo" },
+            { question: "10. ¡Éramos <span class='grande'>tantos</span>! . . . la palabra en negritas es:", options: ["A) Predicado", "B) Adverbio", "C) Sustantivo", "D) Verbo"], correct: "B) Adverbio" },
+            { question: "11. <span class='grande'>Si no te duermes</span> . . . la frase en negritas es:", options: ["A) Oposición", "B) Amenaza", "C) Condición", "D) Contradicción"], correct: "C) Condición" },
+            { question: "12. La frase 'Ojalá que todos sean como tú' está en:", options: ["A) Indicativo", "B) Copretérito", "C) Subjuntivo", "D) Pospretérito"], correct: "C) Subjuntivo" },
+            { question: "<h1>M A T E M Á T I C A S</h1>", options: [], correct: "" },
+            { question: "13. Un ángulo perigonal mide:", options: ["A) 270°", "B) 180°", "C) 360°", "D) 90°"], correct: "C) 360°" },
+            { question: "14. El valor de x en la ecuación 2x + 5 = - 3 , es:", options: ["A) 4", "B) - 4", "C) - 1", "D) 0"], correct: "B) - 4" },
+            { question: "15. Ahorré la cuarta parte del costo de un auto, ¿Cuánto me hace falta para poder comprarlo?", options: ["A) 30 %", "B) 50 %", "C) 60 %", "D) 75 %"], correct: "D) 75 %" },
+            { question: "16. En la expresión ( x<sup>2</sup> )<sup>3</sup> = los exponentes se:", options: ["A) Suman", "B) Restan", "C) Dividen", "D) Multiplican"], correct: "D) Multiplican" },
+            { question: "17. El triple del cuadrado de un número, es:", options: ["A) 2 x<sup>3</sup>", "B) 3 x<sup>2</sup>", "C) x<sup>2</sup> / 3", "D) 3 x<sup>2</sup> / x"], correct: "B) 3 x<sup>2</sup>" },
+            { question: "18. En el sistema 2 p = 6 ; 3 p + q = 11 , el valor de q, es:", options: ["A) 1", "B) 2", "C) - 1", "D) - 2"], correct: "B) 2" },
+            { question: "19. El resultado de: ( x + 5 ) ( x – 5 ) =", options: ["A) x<sup>2</sup> – 25", "B) x<sup>2</sup> + 10 x – 25", "C) x<sup>2</sup> + 5 x + 10", "D) 2 x<sup>2</sup> – 10 x + 20"], correct: "A) x<sup>2</sup> – 25" },
+            { question: "20. Si el siguiente triángulo es isósceles:", options: ["A) A = 50° , B = 50°", "B) A = 60° , B = 60°", "C) A = 70° , B = 70°", "D) A = 80° , B = 80°"], correct: "C) A = 70° , B = 70°" },
+            { question: " ", options: [], correct: "" },
+            { question: "<img src='triangulo.png' alt='Imagen de ejemplo' style='max-width: 100%; height: auto;' />", options: [], correct: "" },
+            { question: "21. ¿Cuántos cm mide x en la figura?", options: ["A) 8", "B) 7", "C) 5", "D) 4"], correct: "A) 8" },
+            { question: "<img src='mitades.png' alt='Imagen de ejemplo' style='max-width: 100%; height: auto;' />", options: [], correct: "" },
+            { question: "22. Encontrar la media y moda de: 4, 3, 2, 5, 2, 1, 3, 4, 2, 3, 4, 2, 3, 5, 2", options: ["A) me = 3 , mo = 4", "B) me = 3 , mo = 2", "C) me = 2 , mo = 3", "D) me = 2 , mo = 3"], correct: "B) me = 3 , mo = 2" },
+            { question: "23. Si se eleva un número a la cuarta potencia, da como resultado 81, ¿Cuál es el número elevado?", options: ["A) 2", "B) 3", "C) 4", "D) 5"], correct: "B) 3" },
+            { question: "24. Encontrar la mediana de: Serie A: 11, 8, 13, 1, 9, 3, 18, 7, 5 y Serie B: 2, 10, 4, 12, 2, 14, 2, 8, 2, 10, 6", options: ["A) A = 3 , B = 6", "B) A = 7 , B = 4", "C) A = 8 , B = 6", "D) A = 9 , B = 6"], correct: "C) A = 8 , B = 6" },
+            { question: "25. El mínimo común múltiplo de 18, 24, y 36 es:", options: ["A) 2<sup>3</sup> ( 3 )<sup>3</sup>", "B) 2<sup>2</sup> 3<sup>3</sup>", "C) 2<sup>3</sup> ( 3 )<sup>2</sup>", "D) 2<sup>4</sup> 3<sup>3</sup>"], correct: "C) 2<sup>3</sup> ( 3 )<sup>2</sup>" },
+            { question: "26. Si una vaca come 3 Kg de hierba en 2 minutos, ¿Cuántos Kilos comerá en media hora?", options: ["A) 45", "B) 40", "C) 35", "D) 30"], correct: "A) 45" },
+            { question: "27. En una tómbola hay 60 boletos que corresponden al 75 % ; ¿De cuántos boletos consta la tómbola?", options: ["A) 70", "B) 80", "C) 75", "D) 85"], correct: "B) 80" },
+            { question: "28. ¿Cuánto miden los ángulos A, B y C?", options: ["A) A = 30°, B = 50°, C = 100°", "B) A = 60°, B = 60°, C = 60°", "C) A = 70°, B = 30°, C = 80°", "D) A = 80°, B = 60°, C = 40°"], correct: "D) A = 80°, B = 60°, C = 40°" },
+            { question: "<img src='triangulillo.png' alt='Imagen de ejemplo' style='max-width: 100%; height: auto;' />", options: [], correct: "" },
+            { question: "29. La tangente de A es:", options: ["A) 0.6", "B) 0.75", "C) 0.8", "D) 1.6"], correct: "B) 0.75" },
+            { question: "<img src='triangul.png' alt='Imagen de ejemplo' style='max-width: 100%; height: auto;' />", options: [], correct: "" },
+            { question: "30. La ecuación de la gráfica es:", options: ["A) y = 2x - 6", "B) y = x² + 1", "C) y = x² - 1", "D) y = x + 1"], correct: "D) y = x + 1" },
+            { question: "<img src='cardenal.png' alt='Imagen de ejemplo' style='max-width: 100%; height: auto;' />", options: [], correct: "" },
+            { question: "31. En una universidad se le preguntó a los alumnos su edad y se obtuvieron los siguientes datos: 23, 27, 26, 27, 24, 28, 27, 23, 26, 24, 23, 28, 25; ¿Cuál es la frecuencia absoluta del número 26?", options: ["A) 27", "B) 23", "C) 3", "D) 2"], correct: "D) 2" },
+            { question: "32. En una urna hay tres esferas plateadas y tres esferas doradas; si Lucy mete la mano para sacar una por una, ¿cuántas veces como mínimo debe meter la mano para completar dos pares del mismo color?", options: ["A) 3", "B) 2", "C) 5", "D) 4"], correct: "C) 5" }
+        ];
+
+        const container = document.getElementById("questionsContainer");
+        questions.forEach((q, index) => {
+            const div = document.createElement("div");
+            div.classList.add("question");
+            div.innerHTML = `<p>${q.question}</p>` +
+                q.options.map(option => 
+                    `<label><input type="radio" name="q${index}" value="${option}"> ${option}</label>`
+                ).join("<br>");
+            container.appendChild(div);
+        });
+        
+        function calculateScore() {
+    let score = 0;
+    let allAnswered = true;
+
+    questions.forEach((q, index) => {
+        // Verifica si la pregunta tiene opciones
+        if (q.options.length > 0) {
+            const selected = document.querySelector(`input[name='q${index}']:checked`);
+            if (!selected) {
+                allAnswered = false;
+            } else if (selected.value === q.correct) {
+                score++; // Incrementa el puntaje si la respuesta es correcta
+                selected.parentNode.classList.add("correct");
+            } else {
+                selected.parentNode.classList.add("incorrect");
+            }
+        }
+    });
+
+    if (!allAnswered) {
+        alert("Por favor, responde todas las preguntas.");
+        return;
+    }
+
+    // Ahora el puntaje total es calculado solo con preguntas que tienen opciones
+    document.getElementById("result").innerText = `Puntuación: ${score} de ${questions.filter(q => q.options.length > 0).length}`;
+    document.getElementById("result").classList.remove("hidden");
+}
+
+    </script>
+</body>
+</html>
